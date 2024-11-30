@@ -1,0 +1,140 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express24 | Premium Food Delivery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Alpine.js -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+    <style>
+        .hover-scale { transition: transform 0.2s; }
+        .hover-scale:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-['Inter']">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <a href="{% url 'home'%}" class="flex items-center space-x-3 text-2xl font-bold text-gray-800 hover:text-blue-600 transition-all duration-300 hover-scale">
+                    <i class='bx bxs-food-menu text-blue-600 text-3xl'></i>
+                    <span class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Express24</span>
+                </a>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home'%}" class="text-gray-800 hover:text-blue-600 font-medium transition-all duration-300 hover:translate-y-[-2px]">Home</a>
+                    <a href="{% url 'about'%}" class="text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 hover:translate-y-[-2px]">About Us</a>
+                    <a href="{% url 'search' %}" class="text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 hover:translate-y-[-2px]">Search</a>
+                    <a href="{% url 'zakaz' %}" class="text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 hover:translate-y-[-2px]">Payment</a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'buyurtma' %}" class="text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 hover:translate-y-[-2px]">Orders</a>
+                        <a href="{% url 'profile' %}" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded-full hover:from-blue-100 hover:to-blue-200 transition-all duration-300 shadow-sm hover:shadow group">
+                            <i class='bx bxs-user-circle text-blue-600'></i>
+                            <span class="group-hover:text-blue-600">{{request.user.username}}</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t">
+            <div class="container mx-auto px-4 py-4 space-y-4">
+                <a href="{% url 'home'%}" class="block text-gray-800 hover:text-blue-600 font-medium transition-colors duration-300">Home</a>
+                <a href="{% url 'about'%}" class="block text-gray-600 hover:text-blue-600 font-medium transition-colors duration-300">About Us</a>
+                <a href="{% url 'search' %}" class="block text-gray-600 hover:text-blue-600 font-medium transition-colors duration-300">Search</a>
+                <a href="{% url 'zakaz' %}" class="block text-gray-600 hover:text-blue-600 font-medium transition-colors duration-300">Payment</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'buyurtma' %}" class="block text-gray-600 hover:text-blue-600 font-medium transition-colors duration-300">Orders</a>
+                    <a href="{% url 'profile' %}" class="flex items-center space-x-2 p-2 bg-blue-50 rounded-lg">
+                        <i class='bx bxs-user-circle text-blue-600'></i>
+                        <span>{{request.user.username}}</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center rounded-full shadow-md">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <footer class="bg-gradient-to-b from-gray-800 to-gray-900 text-white mt-auto">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'about'%}" class="hover:text-blue-400 transition-all duration-300 flex items-center space-x-2 group">
+                            <i class='bx bx-chevron-right opacity-0 group-hover:opacity-100'></i>
+                            <span>About Us</span>
+                        </a></li>
+                        <li><a href="https://t.me/Matnazarov04" target="_blank" class="hover:text-blue-400 transition-all duration-300 flex items-center space-x-2 group">
+                            <i class='bx bx-chevron-right opacity-0 group-hover:opacity-100'></i>
+                            <span>Contact</span>
+                        </a></li>
+                        <li><a href="{% url 'about'%}" class="hover:text-blue-400 transition-all duration-300 flex items-center space-x-2 group">
+                            <i class='bx bx-chevron-right opacity-0 group-hover:opacity-100'></i>
+                            <span>Terms of Use</span>
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">Contact Us</h3>
+                    <p class="flex items-center space-x-3 hover:text-blue-400 transition-all duration-300 group cursor-pointer">
+                        <i class='bx bxs-phone text-blue-400 group-hover:scale-110 transition-transform'></i>
+                        <span>+998 71 200 40 01</span>
+                    </p>
+                    <p class="flex items-center space-x-3 hover:text-blue-400 transition-all duration-300 group cursor-pointer">
+                        <i class='bx bxs-envelope text-blue-400 group-hover:scale-110 transition-transform'></i>
+                        <span>support@express24.uz</span>
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">Follow Us</h3>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-3xl hover:text-blue-400 transition-all duration-300 hover:scale-125"><i class='bx bxl-instagram'></i></a>
+                        <a href="#" class="text-3xl hover:text-blue-400 transition-all duration-300 hover:scale-125"><i class='bx bxl-facebook-circle'></i></a>
+                        <a href="#" class="text-3xl hover:text-blue-400 transition-all duration-300 hover:scale-125"><i class='bx bxl-telegram'></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-gray-700 text-center">
+                <p class="text-gray-400">&copy; 2024 Express24. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle with smooth animation
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('animate-fade-in-down');
+        });
+    </script>
+</body>
+</html>

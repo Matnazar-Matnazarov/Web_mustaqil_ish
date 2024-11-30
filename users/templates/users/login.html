@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="w-full max-w-lg p-8 md:p-12 bg-white/80 backdrop-blur-lg rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)] transition-all duration-500">
+        <form action="" method="post" class="space-y-8" id="loginForm">
+            <div class="text-center space-y-2">
+                <h4 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Welcome Back</h4>
+                <p class="text-gray-600">Please enter your credentials to continue</p>
+            </div>
+            {% csrf_token %}
+            <div class="space-y-6">
+                <div class="relative">
+                    <input type="text" name="username" maxlength="150" required id="id_username" 
+                           class="peer w-full px-6 py-4 border-2 border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 placeholder-transparent"
+                           placeholder="Username">
+                    <label for="id_username" class="absolute left-6 -top-3 bg-white px-2 text-sm font-medium text-gray-600 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-blue-600">Username</label>
+                    <i class="fas fa-user absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-300"></i>
+                </div>
+
+                <div class="relative">
+                    <input type="password" name="password" maxlength="128" required id="id_password" 
+                           class="peer w-full px-6 py-4 border-2 border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 placeholder-transparent"
+                           placeholder="Password">
+                    <label for="id_password" class="absolute left-6 -top-3 bg-white px-2 text-sm font-medium text-gray-600 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-blue-600">Password</label>
+                    <span class="absolute right-6 top-1/2 -translate-y-1/2 cursor-pointer transition-colors duration-300" id="togglePassword">
+                        <i class="fas fa-eye-slash text-gray-400 transition-colors duration-300"></i>
+                    </span>
+                </div>
+            </div>
+
+            <button class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transform active:scale-[0.98] transition-all duration-300 relative overflow-hidden group" type="submit">
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                <span class="relative flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Log In
+                </span>
+            </button>
+
+            <p class="text-center text-gray-600">
+                Not registered yet? 
+                <a href="{% url 'register' %}" class="font-medium text-blue-600 hover:text-indigo-600 underline-offset-4 hover:underline transition-all duration-300">
+                    Create an account
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        const username = document.getElementById('id_username').value.trim();
+        const password = document.getElementById('id_password').value.trim();
+        
+        if (!username || !password) {
+            event.preventDefault();
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg transform transition-all duration-500 opacity-0';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <p>Please fill in all fields</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.classList.remove('opacity-0'), 100);
+            setTimeout(() => {
+                notification.classList.add('opacity-0');
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+    });
+
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('id_password');
+
+    togglePassword.addEventListener('click', function() {
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+</script>
+{% endblock %}

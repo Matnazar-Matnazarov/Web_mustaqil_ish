@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 py-12">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <h1 class="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-12 transform hover:scale-105 transition-transform duration-500 cursor-default">
+        Oqtepa Lavash
+      </h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <!-- Delivery Form -->
+        <div class="lg:col-span-2">
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+              <i class='bx bxs-truck text-2xl mr-3 text-blue-600'></i>
+              Delivery Address
+            </h2>
+            
+            <form method="POST" action="{% url 'savat_add' %}" id="saqlash" class="space-y-8">
+              {% csrf_token %}
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="group relative">
+                  <label class="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-blue-600 transition-colors">
+                    Viloyat
+                  </label>
+                  <input type="text" name="viloyat" 
+                         class="block w-full rounded-xl border-2 border-gray-200 shadow-sm 
+                                focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                                hover:border-blue-400 transition-all duration-300 px-4 py-3">
+                </div>
+                
+                <div class="group relative">
+                  <label class="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-blue-600 transition-colors">
+                    Shahar
+                  </label>
+                  <input type="text" name="shahar" 
+                         class="block w-full rounded-xl border-2 border-gray-200 shadow-sm
+                                focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                                hover:border-blue-400 transition-all duration-300 px-4 py-3">
+                </div>
+              </div>
+
+              <div class="group relative">
+                <label class="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-blue-600 transition-colors">
+                  Mahalla
+                </label>
+                <input type="text" name="mahalla" 
+                       class="block w-full rounded-xl border-2 border-gray-200 shadow-sm
+                              focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                              hover:border-blue-400 transition-all duration-300 px-4 py-3">
+              </div>
+
+              <div class="group relative">
+                <label class="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-blue-600 transition-colors">
+                  Izoh
+                </label>
+                <input type="text" name="izoh" 
+                       class="block w-full rounded-xl border-2 border-gray-200 shadow-sm
+                              focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                              hover:border-blue-400 transition-all duration-300 px-4 py-3">
+              </div>
+
+              <div class="group relative">
+                <label class="block text-sm font-semibold text-gray-700 mb-2 group-hover:text-blue-600 transition-colors">
+                  Uy
+                </label>
+                <input type="text" name="uy" 
+                       class="block w-full rounded-xl border-2 border-gray-200 shadow-sm
+                              focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                              hover:border-blue-400 transition-all duration-300 px-4 py-3">
+              </div>
+
+              <button id="submitBtn" 
+                      class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 text-white py-4 px-8 rounded-xl
+                             hover:from-blue-700 hover:via-blue-800 hover:to-indigo-700
+                             focus:outline-none focus:ring-4 focus:ring-blue-500/50
+                             transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300
+                             shadow-lg hover:shadow-xl
+                             flex items-center justify-center space-x-3 font-semibold text-lg">
+                <i class='bx bx-cart-alt text-2xl'></i>
+                <span>Place Order</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div>
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-8 sticky top-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+              <i class='bx bx-receipt text-2xl mr-3 text-blue-600'></i>
+              Order Summary
+            </h2>
+            
+            <div class="space-y-8">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-semibold text-lg">Products</span>
+                <span id="savat_id" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  {{savat}} UZS
+                </span>
+              </div>
+              
+              <div class="pt-6 border-t-2 border-gray-100">
+                <a href="{% url 'home' %}" 
+                   class="block text-center py-4 px-6 rounded-xl
+                          bg-blue-50 text-blue-600 font-semibold text-lg
+                          hover:bg-blue-100 
+                          transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300
+                          shadow-md hover:shadow-lg">
+                  <i class='bx bx-edit-alt mr-2'></i>
+                  Change Order
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('saqlash');
+    const submitBtn = document.getElementById('submitBtn');
+    const inputs = form.querySelectorAll('input[type="text"]');
+
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.classList.add('transform', '-translate-y-1');
+      });
+      input.addEventListener('blur', () => {
+        input.parentElement.classList.remove('transform', '-translate-y-1');
+      });
+    });
+
+    submitBtn.addEventListener('click', function(event) {
+      event.preventDefault();
+      
+      let isEmpty = false;
+      inputs.forEach(input => {
+        if (input.value.trim() === '') {
+          isEmpty = true;
+          input.classList.add('border-red-500', 'animate-shake', 'ring-4', 'ring-red-500/20');
+          setTimeout(() => {
+            input.classList.remove('animate-shake');
+          }, 500);
+        } else {
+          input.classList.remove('border-red-500', 'ring-4', 'ring-red-500/20');
+        }
+      });
+
+      if (isEmpty) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Iltimos, barcha maydonlarni to\'ldiring!',
+          confirmButtonColor: '#3B82F6',
+          background: '#fff',
+          customClass: {
+            popup: 'rounded-3xl',
+            confirmButton: 'rounded-xl px-6 py-3'
+          }
+        });
+        return;
+      }
+
+      const orderValue = document.getElementById('savat_id').textContent.trim();
+      if (orderValue === '0 UZS') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Empty Cart',
+          text: 'Siz mahsulot harid qilmagansiz\nIltimos mahsulot harid qilib joylashuvni yozing',
+          confirmButtonColor: '#3B82F6',
+          background: '#fff',
+          customClass: {
+            popup: 'rounded-3xl',
+            confirmButton: 'rounded-xl px-6 py-3'
+          }
+        });
+        return;
+      }
+
+      form.submit();
+    });
+  });
+</script>
+
+<style>
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  .animate-shake {
+    animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+  }
+</style>
+
+{% endblock content %}

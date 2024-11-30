@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Search Form -->
+            <div class="mb-12" x-data="{ focused: false }">
+                <form method="GET" action="/qidiruv/" class="flex justify-center">
+                    <div class="relative w-full max-w-2xl">
+                        <input type="text" 
+                               name="q" 
+                               placeholder="Qidirish..." 
+                               @focus="focused = true"
+                               @blur="focused = false"
+                               class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 
+                                      shadow-sm transition-all duration-300
+                                      focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500
+                                      hover:border-blue-400 text-lg"
+                        >
+                        <button type="submit" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 
+                                       text-gray-400 hover:text-blue-600 transition-colors duration-300">
+                            <i class='bx bx-search text-2xl'></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {% if malumot %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                 x-data="{ showItems: false }"
+                 x-init="setTimeout(() => showItems = true, 100)"
+                 x-show="showItems"
+                 x-transition:enter="transition ease-out duration-500"
+                 x-transition:enter-start="opacity-0 transform translate-y-4"
+                 x-transition:enter-end="opacity-100 transform translate-y-0">
+                {% for i in malumot %}
+                <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl 
+                            transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group">
+                    <a href="{% url 'taomlar' i.id %}" class="block">
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="{{i.rasm.url}}" 
+                                 alt="{{i.mahsulot_nomi}}" 
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent 
+                                      opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{i.mahsulot_nomi}}</h3>
+                            <div class="flex items-center justify-between">
+                                <span class="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-800 
+                                           bg-clip-text text-transparent">
+                                    {{i.mahsulot_narxi}} UZS
+                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full 
+                                               flex items-center font-medium">
+                                        <i class='bx bxs-star text-yellow-500 mr-1'></i>
+                                        4.6
+                                    </span>
+                                    <span class="text-gray-500 text-sm">150+ reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-16 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl">
+                <i class='bx bx-search-alt text-6xl text-blue-500 mb-4'></i>
+                <p class="text-xl text-gray-600">Hech qanday ma'lumot topilmadi</p>
+                <a href="{% url 'home' %}" 
+                   class="inline-block mt-6 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 
+                          text-white rounded-xl hover:from-blue-700 hover:to-blue-800 
+                          transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+                    Bosh sahifaga qaytish
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Custom Animations -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-4');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.grid > div').forEach((el) => {
+        el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock content %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+<style>
+  .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
+  }
+</style>
+{% block content %}
+<div class="container mx-auto px-4 py-8 mt-8">
+    <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6">
+            <h1 class="text-3xl font-bold text-white text-center">My Profile</h1>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row p-8 gap-12">
+            <!-- Profile Section -->
+            <div class="lg:w-1/2 space-y-8">
+                <div class="flex flex-col items-center space-y-4">
+                    <div class="relative group">
+                        <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" 
+                             class="w-32 h-32 rounded-full border-4 border-blue-500 shadow-xl object-cover transform transition-all duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-blue-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    </div>
+                    
+                    <div class="w-full max-w-md bg-gray-50 rounded-xl p-6 shadow-inner space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-user text-blue-600 text-xl"></i>
+                                <p class="text-xl text-gray-800 font-medium break-all">{{ request.user.username }}</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-id-card text-blue-600 text-xl"></i>
+                                <p class="text-xl text-gray-800 font-medium">
+                                    {% if request.user.first_name or request.user.last_name %}
+                                        {{ request.user.first_name }} {{ request.user.last_name }}
+                                    {% else %}
+                                        <span class="text-gray-500">No name provided</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                                <p class="text-xl text-gray-800 font-medium break-all">{{ request.user.email }}</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-calendar text-blue-600 text-xl"></i>
+                                <p class="text-gray-600">Joined {{ request.user.date_joined|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <a href="{% url 'editprofile' %}" 
+                               class="flex-1 px-6 py-3 bg-blue-600 text-white text-center rounded-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-edit mr-2"></i>Edit Profile
+                            </a>
+                            <a href="{% url 'logout' %}" 
+                               class="flex-1 px-6 py-3 bg-red-500 text-white text-center rounded-xl hover:bg-red-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basket Section -->
+            <div class="lg:w-1/2">
+                <div class="bg-gray-50 rounded-xl p-6 shadow-lg space-y-6">
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-shopping-basket text-blue-600 mr-3"></i>
+                            Your Basket
+                        </h2>
+                        <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                            Total: {{ savat }} UZS
+                        </span>
+                    </div>
+
+                    <div class="space-y-6 max-h-[500px] overflow-y-auto pr-2">
+                        {% for i in users %}
+                        <div class="group flex items-center justify-between p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+                            <div class="flex items-center space-x-5">
+                                <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                    <i class="fas fa-utensils text-2xl text-blue-600 group-hover:text-blue-700"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors duration-300">{{ i.mahsulot_id.mahsulot_nomi }}</p>
+                                    <p class="text-sm text-gray-500 flex items-center">
+                                        <i class="fas fa-layer-group mr-2 text-blue-500"></i>
+                                        Quantity: {{ i.soni }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end space-y-2">
+                                <p class="font-semibold text-lg bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                                    {{ i.mahsulot_id.mahsulot_narxi }} UZS
+                                </p>
+                                <p class="font-bold text-xl bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                                    {% widthratio i.mahsulot_id.mahsulot_narxi 1 i.soni %} UZS
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <a href="{% url 'zakaz' %}" 
+                       class="block w-full py-4 bg-gradient-to-r from-green-500 to-green-600 text-white text-center rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Complete Order
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animation
+        const profileCard = document.querySelector('.max-w-6xl');
+        profileCard.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+            profileCard.classList.remove('opacity-0', 'translate-y-4');
+            profileCard.classList.add('opacity-100', 'translate-y-0');
+        }, 100);
+
+        // Add hover effects
+        const basketItems = document.querySelectorAll('.space-y-4 > div');
+        basketItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.classList.add('transform', 'scale-[1.02]');
+            });
+            item.addEventListener('mouseleave', function() {
+                this.classList.remove('transform', 'scale-[1.02]');
+            });
+        });
+    });
+</script>
+{% endblock content %}

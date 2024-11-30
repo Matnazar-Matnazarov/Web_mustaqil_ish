@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container mx-auto px-4" x-data="{ showItems: false }">
+    <h1 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+        Milliy Taomlar
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+         x-init="setTimeout(() => showItems = true, 100)"
+         x-show="showItems"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0">
+        {% for i in hammasi %}
+        <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden">
+            <a href="{% url 'milliy_taom' i.id %}" class="block relative group">
+                <img src="{{i.rasm.url}}" alt="{{i.mahsulot_nomi}}" 
+                     class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </a>
+            
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-3">{{i.mahsulot_nomi}}</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full flex items-center font-medium">
+                            <i class='bx bxs-star text-yellow-500 mr-1'></i>
+                            4.6
+                        </span>
+                        <span class="text-gray-500 text-sm">150+ reviews</span>
+                    </div>
+                    <span class="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                        {{i.mahsulot_narxi}} UZS
+                    </span>
+                </div>
+
+                {% if request.user.is_authenticated %}
+                    <div id="quantity-container-{{i.id}}">
+                        {% if i.ulanma_id and i.soni %}
+                            <div class="flex items-center justify-center space-x-3 bg-gray-50 rounded-xl p-3">
+                                <button onclick="updateQuantity('{{i.id}}', 'minus', this)" class="bg-white w-10 h-10 flex items-center justify-center rounded-lg shadow hover:bg-gray-100 transition-colors">
+                                    <i class='bx bx-minus text-xl'></i>
+                                </button>
+                                <span id="quantity-{{i.id}}" class="font-bold text-xl w-12 text-center">{{i.soni}}</span>
+                                <button onclick="updateQuantity('{{i.id}}', 'plus', this)" class="bg-white w-10 h-10 flex items-center justify-center rounded-lg shadow hover:bg-gray-100 transition-colors">
+                                    <i class='bx bx-plus text-xl'></i>
+                                </button>
+                            </div>
+                        {% else %}
+                            <button onclick="updateQuantity('{{i.id}}', 'plus', this)" class="w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg">
+                                Add to Cart
+                            </button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Alert Notification -->
+<div id="notification" class="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex items-center">
+        <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <div class="ml-3">
+            <p id="notification-text" class="text-sm font-medium"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Animations -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-4');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.grid > div').forEach((el) => {
+        el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+        observer.observe(el);
+    });
+});
+
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    const notificationText = document.getElementById('notification-text');
+    
+    notificationText.textContent = message;
+    notification.classList.remove('translate-x-full');
+    
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+    }, 3000);
+}
+
+async function updateQuantity(productId, action, buttonElement) {
+    try {
+        const url = action === 'plus' ? `/pilus/${productId}/` : `/minus/${productId}/`;
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const container = document.getElementById(`quantity-container-${productId}`);
+            const quantity = data.product;
+
+            // Show notification with quantity
+            showNotification(`Mahsulot savatchaga qo'shildi! Hozirgi soni: ${quantity}`);
+
+            if (quantity === 1 && action === 'plus') {
+                container.innerHTML = `
+                    <div class="flex items-center justify-center space-x-3 bg-gray-50 rounded-xl p-3">
+                        <button onclick="updateQuantity('${productId}', 'minus', this)" class="bg-white w-10 h-10 flex items-center justify-center rounded-lg shadow hover:bg-gray-100 transition-colors">
+                            <i class='bx bx-minus text-xl'></i>
+                        </button>
+                        <span id="quantity-${productId}" class="font-bold text-xl w-12 text-center">${quantity}</span>
+                        <button onclick="updateQuantity('${productId}', 'plus', this)" class="bg-white w-10 h-10 flex items-center justify-center rounded-lg shadow hover:bg-gray-100 transition-colors">
+                            <i class='bx bx-plus text-xl'></i>
+                        </button>
+                    </div>
+                `;
+            } else if (quantity === 0) {
+                container.innerHTML = `
+                    <button onclick="updateQuantity('${productId}', 'plus', this)" class="w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg">
+                        Add to Cart
+                    </button>
+                `;
+            } else {
+                const quantityElement = document.getElementById(`quantity-${productId}`);
+                if (quantityElement) {
+                    quantityElement.textContent = quantity;
+                }
+            }
+            
+            // Success animation
+            buttonElement.classList.add('scale-110', 'bg-green-50');
+            setTimeout(() => {
+                buttonElement.classList.remove('scale-110', 'bg-green-50');
+            }, 200);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Xatolik yuz berdi. Iltimos qaytadan urinib ko\'ring');
+        
+        buttonElement.classList.add('bg-red-50');
+        setTimeout(() => {
+            buttonElement.classList.remove('bg-red-50');
+        }, 200);
+    }
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <!-- Hero Section -->
+    <section class="py-20 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center space-y-6 mb-16">
+                <h1 class="text-5xl md:text-6xl font-extrabold">
+                    <span class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Express24</span>
+                </h1>
+                <p class="text-3xl font-bold text-gray-800">Delivery Excellence</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto space-y-8 text-lg text-gray-600 leading-relaxed">
+                <p class="animate-fade-in">
+                    Express24 is your premier food delivery service, bringing convenience and speed right to your doorstep. Whether you order through our website or mobile app, we ensure a seamless experience with flexible payment options including card and cash payments. Our commitment is to deliver your favorite meals quickly and efficiently.
+                </p>
+                <p class="animate-fade-in delay-200">
+                    We've carefully curated partnerships with the finest restaurants to offer you an extensive culinary experience. From gourmet burgers and premium steaks to authentic pizzas and artisanal pasta, from traditional Asian wok dishes to fresh sushi rolls, from healthy breakfast options to hearty lunch specials - Express24 brings together diverse cuisines from across the city, enabling you to explore new flavors every day.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 px-4 bg-white/80 backdrop-blur-sm">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Contact Us
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Customer Support -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="space-y-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-headset text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center text-gray-800">24/7 Customer Support</h3>
+                        <p class="text-gray-600 text-center">Have questions about your order? Our dedicated support team is here to help</p>
+                        <p class="text-2xl font-bold text-center text-blue-600">+99871 200 40 01</p>
+                    </div>
+                </div>
+
+                <!-- Email Support -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="space-y-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-envelope text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center text-gray-800">Email Assistance</h3>
+                        <p class="text-gray-600 text-center">Send us your inquiries anytime. We typically respond within 2 hours</p>
+                        <p class="text-lg font-bold text-center text-blue-600">support@express24.com</p>
+                    </div>
+                </div>
+
+                <!-- Live Chat -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="space-y-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-comments text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center text-gray-800">Live Chat Support</h3>
+                        <p class="text-gray-600 text-center">Connect with our team instantly through our live chat feature</p>
+                        <p class="text-lg font-bold text-center text-blue-600">Available 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-4');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.animate-fade-in').forEach((el) => {
+        el.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-700', 'ease-out');
+        observer.observe(el);
+    });
+});
+</script>
+
+{% endblock content %}
