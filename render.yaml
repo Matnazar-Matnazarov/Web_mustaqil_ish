@@ -1,0 +1,11 @@
+# Exported from Render on 2024-11-30T20:03:25Z
+services:
+- type: web
+  name: Express24
+  runtime: python
+  repo: https://github.com/Matnazar-Matnazarov/Web_mustaqil_ish
+  plan: free
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: gunicorn config.wsgi:application
+version: "1"
